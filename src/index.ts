@@ -24,6 +24,7 @@ const getEmptyInputState = () => ({
   diacriticBase: null,
   diacriticIndex: 0,
   showDiacritics: false,
+  pressCount: 0,
 });
 
 const createAssistedInputs = (diacritics: DiacriticsObject) : void => {
@@ -31,9 +32,10 @@ const createAssistedInputs = (diacritics: DiacriticsObject) : void => {
   const { _assistedInputFields } = window;
 
   assistedInputs.forEach((input, inputIndex) => {
-    input.dataset['assistedinputid'] = inputIndex;
+    input.dataset['assistedinputid'] = inputIndex.toString();
 
     _assistedInputFields.diacritics = diacritics;
+    _assistedInputFields.specialChars = Object.keys(diacritics);
     _assistedInputFields.inputStates[inputIndex] = getEmptyInputState();
 
     addListeners(input);

@@ -3,6 +3,7 @@ export interface InputState {
   diacriticBase: null | string;
   diacriticIndex: number;
   showDiacritics: boolean;
+  pressCount: number;
 }
 
 export interface DiacriticsObject {

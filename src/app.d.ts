@@ -4,6 +4,7 @@ interface InputStates {
 
 interface AssistedInputFields {
   diacritics?: import('./types').DiacriticsObject;
+  specialChars?: string[];
   inputStates: InputStates;
 }
 
