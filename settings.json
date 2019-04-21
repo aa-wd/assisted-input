@@ -1,0 +1,5 @@
+{
+    "expressPort": 9022,
+    "webpackPort": 8022,
+    "devPath": "http://192.168.2.39"
+}
