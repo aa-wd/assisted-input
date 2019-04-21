@@ -41,7 +41,6 @@ export const handleKeyDown = (e: KeyboardEvent & EventTargetInput) => {
 
   inputState.activeKey = e.key;
   inputState.pressCount += 1;
-
 };
 
 export const handleKeyPress = (e: KeyboardEvent & EventTargetInput) => {
