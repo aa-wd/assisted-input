@@ -1,9 +1,10 @@
-import { handleKeyDown, handleKeyPress, handleKeyUp } from './listeners';
-import { DiacriticsObject, AssistedInput, EventNamesAndFunctions } from './types';
+import { handleKeyDown, handleKeyPress, handleKeyUp, handleBlur } from './listeners';
+import { DiacriticsObject, AssistedInputElement, AssistedInputTarget, EventNamesAndFunctions } from './types';
+import { getEmptyInputState } from './models';
 import './main.css';
 
 const init = () => {
-  window._assistedInputFields = {
+  window.AssistedInputFields = {
     inputStates: {},
   };
 };
@@ -12,7 +13,8 @@ const addListeners = (input: HTMLInputElement) => {
   const eventNamesAndFunctions : EventNamesAndFunctions = [
     ['keydown', handleKeyDown],
     ['keypress', handleKeyPress],
-    ['keyup', handleKeyUp]
+    ['keyup', handleKeyUp],
+    ['blur', handleBlur]
   ];
 
   eventNamesAndFunctions.forEach((eventAction) => {
@@ -21,18 +23,13 @@ const addListeners = (input: HTMLInputElement) => {
   });
 };
 
-const getEmptyInputState = () => ({
-  activeKey: '',
-  diacriticBase: null,
-  diacriticIndex: 0,
-  showDiacritics: false,
-  pressCount: 0,
-});
-
-const createCharacterBox = (diacritic: string) => {
+const createCharacterBox = (diacritic: string, isActive: boolean) => {
   const characterBox = document.createElement('div');
 
   characterBox.classList.add('diacritic-box__character');
+  if (isActive) {
+    characterBox.classList.add('diacritic-box__character--active');
+  }
   const diacriticTextNode = document.createTextNode(diacritic);
 
   characterBox.appendChild(diacriticTextNode);
@@ -42,25 +39,26 @@ const createCharacterBox = (diacritic: string) => {
 const createDiacriticBox = (diacriticBase: string) => {
   const diacriticBox = document.createElement('div');
   // const { left, top, height } = input.getBoundingClientRect();
+  //diacriticBox.style.left = `${left + 5}px`;
+  //diacriticBox.style.top = `${top - 0.5 * height}px`;
 
   diacriticBox.classList.add('diacritic-box');
   diacriticBox.dataset.diacriticbase = diacriticBase;
-  //diacriticBox.style.left = `${left + 5}px`;
-  //diacriticBox.style.top = `${top - 0.5 * height}px`;
+
   diacriticBox.style.display = 'none';
   return diacriticBox;
 };
 
 const createDiacriticBoxElements = (diacritics: DiacriticsObject) => {
   const fragment = document.createDocumentFragment();
-  const { specialChars } = window._assistedInputFields;
+  const { specialChars } = window.AssistedInputFields;
 
   specialChars!.forEach((char) => {
     const diacriticBox = createDiacriticBox(char);
     const diacriticsForChar = diacritics[char];
 
-    diacriticsForChar.forEach((diacritic) => {
-      const characterBox = createCharacterBox(diacritic);
+    diacriticsForChar.forEach((diacritic, diacriticIndex) => {
+      const characterBox = createCharacterBox(diacritic, diacriticIndex === 0);
       diacriticBox.appendChild(characterBox);
     });
     fragment.appendChild(diacriticBox);
@@ -69,15 +67,15 @@ const createDiacriticBoxElements = (diacritics: DiacriticsObject) => {
 };
 
 const createAssistedInputs = (diacritics: DiacriticsObject) : void => {
-  const assistedInputs : NodeListOf<HTMLInputElement & AssistedInput> = document.querySelectorAll('input[data-assisted]');
-  const { _assistedInputFields } = window;
+  const assistedInputs : NodeListOf<AssistedInputElement> = document.querySelectorAll('input[data-assisted]');
+  const { AssistedInputFields } = window;
 
   assistedInputs.forEach((input, inputIndex) => {
     input.dataset['assistedinputid'] = inputIndex.toString();
 
-    _assistedInputFields.diacritics = diacritics;
-    _assistedInputFields.specialChars = Object.keys(diacritics);
-    _assistedInputFields.inputStates[inputIndex] = getEmptyInputState();
+    AssistedInputFields.diacritics = diacritics;
+    AssistedInputFields.specialChars = Object.keys(diacritics);
+    AssistedInputFields.inputStates[inputIndex] = getEmptyInputState();
 
     addListeners(input);
   });

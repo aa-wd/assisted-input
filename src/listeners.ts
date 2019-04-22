@@ -1,10 +1,11 @@
-import { EventTargetInput, InputState, AssistedInputTarget } from './types';
+import { EventTargetInput, InputState, AssistedInputTarget, AssistedInput, AssistedInputElement, } from './types';
+import { getEmptyInputState } from './models';
 
 const getCurrentInputIndex = (e: KeyboardEvent & EventTargetInput) => e.target.dataset.assistedinputid;
 
 const getInputState = (e: AssistedInputTarget) => {
   const currentInputIndex = getCurrentInputIndex(e);
-  return window._assistedInputFields.inputStates[currentInputIndex];
+  return window.AssistedInputFields.inputStates[currentInputIndex];
 };
 
 const keyIsActive = (e: AssistedInputTarget, inputState: InputState) => {
@@ -18,19 +19,26 @@ const keyIsActive = (e: AssistedInputTarget, inputState: InputState) => {
   };
 };
 
-const showDiacriticBox = (diacriticBase: string, input: HTMLInputElement) => {
-  const diacriticBox = document.querySelector(`.diacritic-box[data-diacriticbase=${diacriticBase}]`) as HTMLDivElement;
+const getDiacriticBoxSelector = (diacriticBase: string) => `.diacritic-box[data-diacriticbase=${diacriticBase}]`;
+
+const showDiacriticBox = (diacriticBase: string, input: AssistedInputElement) => {
+  const diacriticBox = document.querySelector(getDiacriticBoxSelector(diacriticBase)) as HTMLDivElement;
+  const assistedInputId = input.dataset.assistedinputid;
+  const inputState = window.AssistedInputFields.inputStates[assistedInputId];
   const { left, top, height } = input.getBoundingClientRect();
 
   diacriticBox.style.display = 'flex';
   diacriticBox.style.left = `${left + 5}px`;
   diacriticBox.style.top = `${top - 0.5 * height}px`;
+
+  inputState.diacriticBase = diacriticBase;
+  inputState.showDiacritics = true;
 };
 
 const checkForSpecialCharacter = (
-  key: string, inputState: InputState, currentPressCount: number, input: HTMLInputElement
+  key: string, inputState: InputState, currentPressCount: number, input: AssistedInputElement
 ) => {
-  const { specialChars } = window._assistedInputFields;
+  const { specialChars } = window.AssistedInputFields;
 
   if (specialChars!.includes(key)) {
 
@@ -42,10 +50,19 @@ const checkForSpecialCharacter = (
   }
 };
 
+const handleKeyDownWithDiacritics = (e: AssistedInputTarget) => {
+  e.preventDefault();
+};
+
 export const handleKeyDown = (e: AssistedInputTarget) => {
   const inputState = getInputState(e);
 
   if (keyIsActive(e, inputState)) {
+    return;
+  }
+
+  if (inputState.showDiacritics) {
+    handleKeyDownWithDiacritics(e);
     return;
   }
 
@@ -63,4 +80,17 @@ export const handleKeyUp = (e: AssistedInputTarget) => {
   const inputState = getInputState(e);
 
   inputState.activeKey = '';
+};
+
+export const handleBlur = (e: AssistedInputTarget) => {
+  const index = e.target.dataset.assistedinputid;
+  const inputState = window.AssistedInputFields.inputStates[index];
+
+  if (inputState.diacriticBase) {
+    const diacriticBox = document.querySelector(getDiacriticBoxSelector(inputState.diacriticBase)) as AssistedInputElement;
+    if (diacriticBox) {
+      diacriticBox.style.display = 'none';
+    }
+  }
+  window.AssistedInputFields.inputStates[index] = getEmptyInputState();
 };

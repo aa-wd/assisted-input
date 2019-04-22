@@ -16,8 +16,10 @@ export interface AssistedInput {
   }
 }
 
+export type AssistedInputElement = HTMLInputElement & AssistedInput;
+
 export interface EventTargetInput {
-  target: AssistedInput;
+  target: AssistedInputElement;
 }
 
 export type AssistedInputTarget = KeyboardEvent & EventTargetInput;

@@ -9,5 +9,5 @@ interface AssistedInputFields {
 }
 
 interface Window {
-  _assistedInputFields: AssistedInputFields;
+  AssistedInputFields: AssistedInputFields;
 }
