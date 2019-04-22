@@ -92,8 +92,8 @@ export const selectNextDiacritic = (
   highlightNext(nextIndex, inputState.diacriticBase!);
   inputState.diacriticIndex = nextIndex;
 
-
   const input = getInputElement(inputIndex) as HTMLInputElement;
+
   const { value, selectionStart } = input;
   const currentDiacritic = diacritics[inputState.diacriticIndex];
   const currentCaretPosition = input.selectionStart;

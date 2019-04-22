@@ -22,14 +22,16 @@ export const handleKeyDown = (e: AssistedInputTarget) => {
   inputState.pressCount += 1;
 };
 
-export const handleKeyPress = (e: AssistedInputTarget) => {
-  const inputState = getInputState(e);
-};
-
 export const handleKeyUp = (e: AssistedInputTarget) => {
   const inputState = getInputState(e);
-
-  inputState.activeKey = '';
+  /**
+   * if two different keys are pressed very rapidly after each other,
+   * the first key up event will fire after the *second* keydown. Prevent
+   * removing the active key in such a situation.
+   */
+  if (e.key === inputState.activeKey) {
+    inputState.activeKey = '';
+  }
 };
 
 export const handleBlur = (e: AssistedInputTarget) => {
