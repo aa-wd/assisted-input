@@ -1,5 +1,5 @@
 import { handleKeyDown, handleKeyPress, handleKeyUp } from './listeners';
-import { DiacriticsObject, AssistedInput } from './types';
+import { DiacriticsObject, AssistedInput, EventNamesAndFunctions } from './types';
 import './main.css';
 
 const init = () => {
@@ -9,13 +9,15 @@ const init = () => {
 };
 
 const addListeners = (input: HTMLInputElement) => {
-  [
+  const eventNamesAndFunctions : EventNamesAndFunctions = [
     ['keydown', handleKeyDown],
     ['keypress', handleKeyPress],
     ['keyup', handleKeyUp]
-  ].forEach((eventAction: [string, EventListener]) => {
+  ];
+
+  eventNamesAndFunctions.forEach((eventAction) => {
     const [ eventName, eventFunction ] = eventAction;
-    input.addEventListener(eventName, eventFunction);
+    input.addEventListener(eventName, eventFunction as EventListener);
   });
 };
 
@@ -37,23 +39,24 @@ const createCharacterBox = (diacritic: string) => {
   return characterBox;
 };
 
-const createDiacriticBox = (input: HTMLInputElement) => {
+const createDiacriticBox = (diacriticBase: string) => {
   const diacriticBox = document.createElement('div');
-  const { left, top, height } = input.getBoundingClientRect();
+  // const { left, top, height } = input.getBoundingClientRect();
 
   diacriticBox.classList.add('diacritic-box');
-  diacriticBox.style.left = `${left + 5}px`;
-  diacriticBox.style.top = `${top - 0.5 * height}px`;
-  // diacriticBox.style.display = 'none';
+  diacriticBox.dataset.diacriticbase = diacriticBase;
+  //diacriticBox.style.left = `${left + 5}px`;
+  //diacriticBox.style.top = `${top - 0.5 * height}px`;
+  diacriticBox.style.display = 'none';
   return diacriticBox;
 };
 
-const createDiacriticBoxElements = (diacritics: DiacriticsObject, input: HTMLInputElement) => {
+const createDiacriticBoxElements = (diacritics: DiacriticsObject) => {
   const fragment = document.createDocumentFragment();
   const { specialChars } = window._assistedInputFields;
 
-  specialChars.forEach((char) => {
-    const diacriticBox = createDiacriticBox(input);
+  specialChars!.forEach((char) => {
+    const diacriticBox = createDiacriticBox(char);
     const diacriticsForChar = diacritics[char];
 
     diacriticsForChar.forEach((diacritic) => {
@@ -77,8 +80,8 @@ const createAssistedInputs = (diacritics: DiacriticsObject) : void => {
     _assistedInputFields.inputStates[inputIndex] = getEmptyInputState();
 
     addListeners(input);
-    createDiacriticBoxElements(diacritics, input);
   });
+  createDiacriticBoxElements(diacritics);
 };
 
 init();

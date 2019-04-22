@@ -19,3 +19,9 @@ export interface AssistedInput {
 export interface EventTargetInput {
   target: AssistedInput;
 }
+
+export type AssistedInputTarget = KeyboardEvent & EventTargetInput;
+
+export type AssistedInputTargetFunction = (e: AssistedInputTarget) => void;
+
+export type EventNamesAndFunctions = [string, AssistedInputTargetFunction][];
