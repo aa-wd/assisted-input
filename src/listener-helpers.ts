@@ -1,8 +1,12 @@
-import { AssistedInputTarget, AssistedInputElement, InputState } from './types';
+import { AssistedInputTarget, AssistedInputElement, InputState, DiacriticsObject } from './types';
 import { getEmptyInputState } from './models';
 import { moveArrayIndex } from './utils';
 
 export const getCurrentInputIndex = (e: AssistedInputTarget) => e.target.dataset.assistedinputid;
+
+export const getInputElement = (inputIndex: number|string) => {
+  return document.querySelector(`[data-assistedinputid="${inputIndex}"]`)
+};
 
 export const getInputState = (e: AssistedInputTarget) => {
   const currentInputIndex = getCurrentInputIndex(e);
@@ -81,12 +85,30 @@ const highlightNext = (newActiveIndex: number, diacriticBase: string) => {
   nextElement!.classList.add(activeClassName);
 };
 
+export const selectNextDiacritic = (
+  forwards: boolean, diacritics: string[], inputState: InputState, inputIndex: string,
+) => {
+  const nextIndex = moveArrayIndex(forwards, inputState.diacriticIndex, diacritics.length);
+  highlightNext(nextIndex, inputState.diacriticBase!);
+  inputState.diacriticIndex = nextIndex;
+
+
+  const input = getInputElement(inputIndex) as HTMLInputElement;
+  const { value, selectionStart } = input;
+  const currentDiacritic = diacritics[inputState.diacriticIndex];
+  const currentCaretPosition = input.selectionStart;
+
+  const newValue = `${value.substring(0, selectionStart! - 1)}${currentDiacritic}${value.substring(selectionStart!, input.value.length)}`;
+
+  input.value = newValue;
+  input.setSelectionRange(currentCaretPosition!, currentCaretPosition!);
+};
+
 export const handleKeyDownWithDiacritics = (e: AssistedInputTarget) => {
   e.preventDefault();
 
   const inputIndex = getCurrentInputIndex(e);
   const inputState = getInputState(e);
-
   const diacritics = window.AssistedInputFields.diacritics![inputState.diacriticBase as string];
 
   switch(e.key) {
@@ -98,15 +120,11 @@ export const handleKeyDownWithDiacritics = (e: AssistedInputTarget) => {
     }
     case 'ArrowRight':
     case inputState.diacriticBase: {
-      const nextIndex = moveArrayIndex(true, inputState.diacriticIndex, diacritics.length);
-      highlightNext(nextIndex, inputState.diacriticBase!);
-      inputState.diacriticIndex = nextIndex;
+      selectNextDiacritic(true, diacritics, inputState, inputIndex);
       break;
     }
     case 'ArrowLeft': {
-      const nextIndex = moveArrayIndex(false, inputState.diacriticIndex, diacritics.length);
-      highlightNext(nextIndex, inputState.diacriticBase!);
-      inputState.diacriticIndex = nextIndex;
+      selectNextDiacritic(false, diacritics, inputState, inputIndex);
       break;
     }
   }
