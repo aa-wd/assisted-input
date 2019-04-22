@@ -4,4 +4,5 @@ export const getEmptyInputState = () => ({
   diacriticIndex: 0,
   showDiacritics: false,
   pressCount: 0,
+  lastKeyWasApostrophe: false,
 });

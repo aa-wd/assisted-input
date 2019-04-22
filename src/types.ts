@@ -4,6 +4,7 @@ export interface InputState {
   diacriticIndex: number;
   showDiacritics: boolean;
   pressCount: number;
+  lastKeyWasApostrophe: boolean;
 }
 
 export interface DiacriticsObject {

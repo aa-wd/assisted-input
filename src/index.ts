@@ -1,18 +1,11 @@
-import { handleKeyDown, handleKeyPress, handleKeyUp, handleBlur } from './listeners';
-import { DiacriticsObject, AssistedInputElement, AssistedInputTarget, EventNamesAndFunctions } from './types';
+import { handleKeyDown, handleKeyUp, handleBlur } from './listeners';
+import { DiacriticsObject, AssistedInputElement, EventNamesAndFunctions } from './types';
 import { getEmptyInputState } from './models';
 import './main.css';
-
-const init = () => {
-  window.AssistedInputFields = {
-    inputStates: {},
-  };
-};
 
 const addListeners = (input: HTMLInputElement) => {
   const eventNamesAndFunctions : EventNamesAndFunctions = [
     ['keydown', handleKeyDown],
-    ['keypress', handleKeyPress],
     ['keyup', handleKeyUp],
     ['blur', handleBlur]
   ];
@@ -79,6 +72,13 @@ const createAssistedInputs = (diacritics: DiacriticsObject) : void => {
     addListeners(input);
   });
   createDiacriticBoxElements(diacritics);
+};
+
+const init = () => {
+  window.AssistedInputFields = {
+    inputStates: {},
+    createAssistedInputs,
+  };
 };
 
 init();

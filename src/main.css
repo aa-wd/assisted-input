@@ -33,7 +33,7 @@ body {
 }
 
 .diacritic-box__character {
-  background-color: #a6a6b5;
+  background-color: #b4b4b7;
   color: white;
 
   width: 1.5rem;
@@ -46,5 +46,5 @@ body {
 
 
 .diacritic-box__character--active {
-  background-color: #3050f3;
+  background-color: #58a1ff;
 }

@@ -1,6 +1,6 @@
 import {
   keyIsActive, handleKeyDownWithDiacritics, checkForSpecialCharacter, getInputState,
-  resetInputState,
+  resetInputState, checkLongSpacebarPress
 } from './listener-helpers';
 import { AssistedInputTarget } from './types';
 
@@ -8,6 +8,10 @@ export const handleKeyDown = (e: AssistedInputTarget) => {
   const inputState = getInputState(e);
 
   if (keyIsActive(e, inputState)) {
+    // turn space into apostrophe on long spacebar press
+    if (e.key === ' ') {
+      checkLongSpacebarPress(e);
+    }
     return;
   }
 
@@ -31,10 +35,11 @@ export const handleKeyUp = (e: AssistedInputTarget) => {
    */
   if (e.key === inputState.activeKey) {
     inputState.activeKey = '';
+    inputState.lastKeyWasApostrophe = false;
   }
 };
 
 export const handleBlur = (e: AssistedInputTarget) => {
   const index = e.target.dataset.assistedinputid;
-  resetInputState(index);
+  // resetInputState(index);
 };

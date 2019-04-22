@@ -37,7 +37,7 @@ export const checkForSpecialCharacter = (
       if (key === inputState.activeKey && currentPressCount === inputState.pressCount) {
         showDiacriticBox(key, input);
       }
-    }, 250);
+    }, 200);
   }
 };
 
@@ -85,6 +85,25 @@ const highlightNext = (newActiveIndex: number, diacriticBase: string) => {
   nextElement!.classList.add(activeClassName);
 };
 
+const changeInputValue = (inputIndex: string, newCharacter: string, replaceChar = true) => {
+  const input = getInputElement(inputIndex) as HTMLInputElement;
+
+  const { value, selectionStart } = input;
+  const currentCaretPosition = replaceChar ? input.selectionStart : input.selectionStart! + 1;
+  const endOffset = replaceChar ? 1 : 0;
+
+  const stringBeforeCaret = value.substring(0, selectionStart! - endOffset);
+  const stringAfterCaret = value.substring(selectionStart!, input.value.length);
+  const newValue = `${stringBeforeCaret}${newCharacter}${stringAfterCaret}`;
+  input.value = newValue;
+
+  /**
+   * Fix caret position in input when changing text. Caret jumps to end if
+   * text is changed.
+   */
+  input.setSelectionRange(currentCaretPosition!, currentCaretPosition!);
+};
+
 export const selectNextDiacritic = (
   forwards: boolean, diacritics: string[], inputState: InputState, inputIndex: string,
 ) => {
@@ -92,16 +111,8 @@ export const selectNextDiacritic = (
   highlightNext(nextIndex, inputState.diacriticBase!);
   inputState.diacriticIndex = nextIndex;
 
-  const input = getInputElement(inputIndex) as HTMLInputElement;
-
-  const { value, selectionStart } = input;
   const currentDiacritic = diacritics[inputState.diacriticIndex];
-  const currentCaretPosition = input.selectionStart;
-
-  const newValue = `${value.substring(0, selectionStart! - 1)}${currentDiacritic}${value.substring(selectionStart!, input.value.length)}`;
-
-  input.value = newValue;
-  input.setSelectionRange(currentCaretPosition!, currentCaretPosition!);
+  changeInputValue(inputIndex, currentDiacritic);
 };
 
 export const handleKeyDownWithDiacritics = (e: AssistedInputTarget) => {
@@ -112,9 +123,8 @@ export const handleKeyDownWithDiacritics = (e: AssistedInputTarget) => {
   const diacritics = window.AssistedInputFields.diacritics![inputState.diacriticBase as string];
 
   switch(e.key) {
-    case 'Enter':
-    case 'Backspace':
-    case 'Escape': {
+    case ' ':
+    case 'Enter': {
       resetInputState(inputIndex);
       break;
     }
@@ -127,6 +137,29 @@ export const handleKeyDownWithDiacritics = (e: AssistedInputTarget) => {
       selectNextDiacritic(false, diacritics, inputState, inputIndex);
       break;
     }
+    case 'Escape':
+    case 'Backspace': {
+      // On escape and backspace, revert to original character without diacritic.
+      const originalChar = inputState.diacriticBase!;
+      changeInputValue(inputIndex, originalChar);
+      resetInputState(inputIndex);
+      break;
+    }
+    default: {
+      if (e.key.length === 1) {
+        changeInputValue(inputIndex, e.key, false);
+        resetInputState(inputIndex);
+      }
+    }
   }
 };
 
+export const checkLongSpacebarPress = (e: AssistedInputTarget) => {
+  const inputState = getInputState(e);
+  const inputIndex = getCurrentInputIndex(e);
+
+  if (e.key === ' ' && !inputState.lastKeyWasApostrophe) {
+    changeInputValue(inputIndex, "'")
+    inputState.lastKeyWasApostrophe = true;
+  }
+}
