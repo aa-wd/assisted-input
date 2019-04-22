@@ -23,11 +23,13 @@ const addListeners = (input: HTMLInputElement) => {
   });
 };
 
-const createCharacterBox = (diacritic: string, isActive: boolean) => {
+const createCharacterBox = (diacritic: string, diacriticIndex: number, diacriticBase: string) => {
   const characterBox = document.createElement('div');
-
   characterBox.classList.add('diacritic-box__character');
-  if (isActive) {
+  characterBox.dataset.diacriticbase = diacriticBase;
+  characterBox.dataset.diacriticindex = diacriticIndex.toString();
+
+  if (diacriticIndex === 0) {
     characterBox.classList.add('diacritic-box__character--active');
   }
   const diacriticTextNode = document.createTextNode(diacritic);
@@ -38,9 +40,6 @@ const createCharacterBox = (diacritic: string, isActive: boolean) => {
 
 const createDiacriticBox = (diacriticBase: string) => {
   const diacriticBox = document.createElement('div');
-  // const { left, top, height } = input.getBoundingClientRect();
-  //diacriticBox.style.left = `${left + 5}px`;
-  //diacriticBox.style.top = `${top - 0.5 * height}px`;
 
   diacriticBox.classList.add('diacritic-box');
   diacriticBox.dataset.diacriticbase = diacriticBase;
@@ -58,7 +57,7 @@ const createDiacriticBoxElements = (diacritics: DiacriticsObject) => {
     const diacriticsForChar = diacritics[char];
 
     diacriticsForChar.forEach((diacritic, diacriticIndex) => {
-      const characterBox = createCharacterBox(diacritic, diacriticIndex === 0);
+      const characterBox = createCharacterBox(diacritic, diacriticIndex, char);
       diacriticBox.appendChild(characterBox);
     });
     fragment.appendChild(diacriticBox);
