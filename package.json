@@ -7,8 +7,8 @@
     "dist/*.js"
   ],
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/aa-wd/assisted-input.git"
+    "type": "git",
+    "url": "https://github.com/aa-wd/assisted-input.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

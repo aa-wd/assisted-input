@@ -16,6 +16,7 @@ if you just quickly want to check it out, clone the repo, run the `express` serv
 
 ```console
 git clone https://github.com/aa-wd/assisted-input.git
+cd assisted-input
 npm install && npm run build
 npm run server:prod
 ```
