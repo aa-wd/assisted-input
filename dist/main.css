@@ -24,17 +24,19 @@ h1 {
 }
 
 .instruction__inputs {
+  border: 1px solid #1a1921;
   border: 1px solid var(--main-dark-color);
 }
 
 .instruction__texts {
+  background-color: #1a1921;
   background-color: var(--main-dark-color);
   line-height: 1.5;
   color: white;
 }
 
 .inputs__wrapper {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   display: flex;
   justify-content: center;
 }
@@ -50,10 +52,9 @@ h1 {
 }
 
 .diacritic-box {
-  --box-size: 1.5rem;
   position: fixed;
   display: flex;
-  font-family: "IBM Plex Sans", sans-serif;
+  font-family: "IBM Plex Sans";
   font-size: 1.5rem;
 }
 
@@ -61,8 +62,7 @@ h1 {
   background-color: #b4b4b7;
   color: white;
 
-  width: var(--box-size);
-  height: var(--box-size);
+  width: 1.5rem;
   margin-right: 0.5rem;
   padding: 0.2rem;
   border-radius: 20%;
@@ -92,3 +92,4 @@ kbd {
 .copyright {
   text-align: center;
 }
+

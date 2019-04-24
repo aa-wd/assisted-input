@@ -67,7 +67,7 @@ const createAssistedInputs = (diacritics: DiacriticsObject) : void => {
 
     AssistedInputFields.diacritics = diacritics;
     AssistedInputFields.specialChars = Object.keys(diacritics);
-    AssistedInputFields.inputStates[inputIndex] = getEmptyInputState();
+    AssistedInputFields.inputStates[inputIndex] = getEmptyInputState(inputIndex);
 
     addListeners(input);
   });
@@ -82,14 +82,5 @@ const init = () => {
 };
 
 init();
-
-createAssistedInputs({
-  'a': ['a', 'à', 'â', 'æ'],
-  'c': ['c', 'ç'],
-  'e': ['e', 'é', 'è', 'ê', 'ë'],
-  'i': ['i', 'î', 'ï'],
-  'o': ['o', 'ô', 'œ'],
-  'u': ['u', 'û', 'ü', 'ù'],
-});
 
 export default createAssistedInputs;

@@ -1,6 +1,6 @@
 import { AssistedInputTarget, AssistedInputElement, InputState, DiacriticsObject } from './types';
 import { getEmptyInputState } from './models';
-import { moveArrayIndex } from './utils';
+import { moveArrayIndex, getBasePixelSize } from './utils';
 
 export const getCurrentInputIndex = (e: AssistedInputTarget) => e.target.dataset.assistedinputid;
 
@@ -31,11 +31,12 @@ export const checkForSpecialCharacter = (
 ) => {
   const { specialChars } = window.AssistedInputFields;
 
-  if (specialChars!.includes(key)) {
-
+  if (specialChars!.includes(key) || key === ' ') {
     setTimeout(() => {
       if (key === inputState.activeKey && currentPressCount === inputState.pressCount) {
-        showDiacriticBox(key, input);
+        key === ' ' ?
+          changeInputValue(inputState.inputIndex!, "'"): // replace space with apostrophe
+          showDiacriticBox(key, input); // select diacritic
       }
     }, 200);
   }
@@ -45,17 +46,25 @@ const showDiacriticBox = (diacriticBase: string, input: AssistedInputElement) =>
   const diacriticBox = document.querySelector(getDiacriticBoxSelector(diacriticBase)) as HTMLDivElement;
   const assistedInputId = input.dataset.assistedinputid;
   const inputState = window.AssistedInputFields.inputStates[assistedInputId];
-  const { left, top, height } = input.getBoundingClientRect();
+  const { left, top } = input.getBoundingClientRect();
+
+  const diacriticBoxHeightInRem = parseFloat(getComputedStyle(diacriticBox)
+    .getPropertyValue('--box-size')
+    .split('rem')[0]
+  );
+  const basePixelSize = getBasePixelSize();
+  const diacriticBoxHeightInPixels = diacriticBoxHeightInRem * basePixelSize;
 
   diacriticBox.style.display = 'flex';
-  diacriticBox.style.left = `${left + 5}px`;
-  diacriticBox.style.top = `${top - 0.5 * height}px`;
+  diacriticBox.style.left = `${left}px`;
+  diacriticBox.style.top = `${top - 1.5 * diacriticBoxHeightInPixels}px`;
+
 
   inputState.diacriticBase = diacriticBase;
   inputState.showDiacritics = true;
 };
 
-export const resetInputState = (index: string) => {
+export const resetInputState = (index: number|string) => {
   const inputState = window.AssistedInputFields.inputStates[index];
 
   if (inputState.diacriticBase) {
@@ -68,7 +77,7 @@ export const resetInputState = (index: string) => {
       highlightNext(0, inputState.diacriticBase);
     }
   }
-  window.AssistedInputFields.inputStates[index] = getEmptyInputState();
+  window.AssistedInputFields.inputStates[index] = getEmptyInputState(inputState.inputIndex!);
 };
 
 const highlightNext = (newActiveIndex: number, diacriticBase: string) => {
@@ -85,7 +94,7 @@ const highlightNext = (newActiveIndex: number, diacriticBase: string) => {
   nextElement!.classList.add(activeClassName);
 };
 
-const changeInputValue = (inputIndex: string, newCharacter: string, replaceChar = true) => {
+const changeInputValue = (inputIndex: number | string | number, newCharacter: string, replaceChar = true) => {
   const input = getInputElement(inputIndex) as HTMLInputElement;
 
   const { value, selectionStart } = input;
@@ -105,7 +114,7 @@ const changeInputValue = (inputIndex: string, newCharacter: string, replaceChar 
 };
 
 export const selectNextDiacritic = (
-  forwards: boolean, diacritics: string[], inputState: InputState, inputIndex: string,
+  forwards: boolean, diacritics: string[], inputState: InputState, inputIndex: string | number,
 ) => {
   const nextIndex = moveArrayIndex(forwards, inputState.diacriticIndex, diacritics.length);
   highlightNext(nextIndex, inputState.diacriticBase!);
@@ -118,12 +127,11 @@ export const selectNextDiacritic = (
 export const handleKeyDownWithDiacritics = (e: AssistedInputTarget) => {
   e.preventDefault();
 
-  const inputIndex = getCurrentInputIndex(e);
   const inputState = getInputState(e);
+  const inputIndex = inputState.inputIndex as number;
   const diacritics = window.AssistedInputFields.diacritics![inputState.diacriticBase as string];
 
   switch(e.key) {
-    case ' ':
     case 'Enter': {
       resetInputState(inputIndex);
       break;
@@ -146,6 +154,7 @@ export const handleKeyDownWithDiacritics = (e: AssistedInputTarget) => {
       break;
     }
     default: {
+      // prevent keys like "AltGraph" to be shown in input
       if (e.key.length === 1) {
         changeInputValue(inputIndex, e.key, false);
         resetInputState(inputIndex);
@@ -153,13 +162,3 @@ export const handleKeyDownWithDiacritics = (e: AssistedInputTarget) => {
     }
   }
 };
-
-export const checkLongSpacebarPress = (e: AssistedInputTarget) => {
-  const inputState = getInputState(e);
-  const inputIndex = getCurrentInputIndex(e);
-
-  if (e.key === ' ' && !inputState.lastKeyWasApostrophe) {
-    changeInputValue(inputIndex, "'")
-    inputState.lastKeyWasApostrophe = true;
-  }
-}
