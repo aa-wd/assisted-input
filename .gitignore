@@ -1,2 +1,4 @@
 node_modules
-lib
+dist
+server/static/css/ai
+server/static/js

@@ -37,5 +37,5 @@ export const handleKeyUp = (e: AssistedInputTarget) => {
 
 export const handleBlur = (e: AssistedInputTarget) => {
   const index = e.target.dataset.assistedinputid;
-  // resetInputState(index);
+  resetInputState(index);
 };
