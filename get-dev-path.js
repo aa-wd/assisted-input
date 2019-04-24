@@ -1,6 +1,6 @@
-const { expressPort, webpackPort, devPath } = require('./settings.json');
+const { expressPort, webpackPort, devPath, productionPath, isOnVps } = require('./settings.json');
 
-const getExpressPath =  () => `${devPath}:${expressPort}`;
+const getExpressPath =  () => isOnVps ? productionPath : `${devPath}:${expressPort}`;
 const getWebpackPath = () => `${devPath}:${webpackPort}`;
 
 module.exports = {
