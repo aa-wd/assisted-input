@@ -1,54 +1,3 @@
-:root {
-  --main-dark-color: #1a1921;
-}
-
-body {
-  font-family: Rubik, sans-serif;
-  margin: 1rem;
-}
-
-h1 {
-  text-align: center;
-}
-
-.container {
-  display: flex;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.instruction__inputs,
-.instruction__texts {
-  padding: 2rem;
-  width: 50%;
-}
-
-.instruction__inputs {
-  border: 1px solid var(--main-dark-color);
-}
-
-.instruction__texts {
-  background-color: var(--main-dark-color);
-  line-height: 1.5;
-  color: white;
-}
-
-.inputs__wrapper {
-  margin-bottom: 3rem;
-  display: flex;
-  justify-content: center;
-}
-
-.instruction__inputs input {
-  padding: 0.6rem;
-  font-size: 1.2rem;
-  letter-spacing: 0.05rem;
-  border-radius: 0;
-  border: 0.07rem solid rgb(150, 150, 150);
-
-  width: 80%;
-}
-
 .diacritic-box {
   --box-size: 1.5rem;
   position: fixed;
@@ -72,23 +21,4 @@ h1 {
 
 .diacritic-box__character--active {
   background-color: #58a1ff;
-}
-
-kbd {
-  padding: 0.1em 0.6em;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  background-color: #f7f7f7;
-  color: #333;
-  box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2), 0 0 0 2px #ffffff inset;
-  border-radius: 3px;
-  display: inline-block;
-  margin: 0 0.1em;
-  text-shadow: 0 1px 0 #fff;
-  line-height: 1.4;
-  white-space: nowrap;
-}
-
-.copyright {
-  text-align: center;
 }

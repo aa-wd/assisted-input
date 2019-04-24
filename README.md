@@ -16,10 +16,16 @@ if you just quickly want to check it out, clone the repo, run the `express` serv
 
 ```console
 git clone https://github.com/aa-wd/assisted-input.git
+npm install && npm run build
 npm run server:prod
 ```
 
 ## Usage
+
+- add `data-assisted` attribute to input elements
+- add the [minimal css needed](https://gist.github.com/aa-wd/b0fb3f007e85641c6570b4b3ee850ba0) (feel free to adjust)
+- initialize the assisted input fields
+
 Add `data-assisted` as an attribute to inputs you want assistance for:
 
 ```html
