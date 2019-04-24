@@ -1,12 +1,23 @@
 {
-  "name": "assisted-input",
-  "version": "1.0.0",
+  "name": "@aawd/assisted-input",
+  "version": "1.0.15",
   "description": "input field(s) with assistance for diacritics",
-  "main": "lib/index.js",
+  "main": "dist/main.js",
+  "files": [
+    "dist/*.js"
+  ],
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/aa-wd/assisted-input.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server:dev": "node server/start-server",
-    "webpack:dev": "NODE_ENV=development webpack-dev-server --config webpack.config.js"
+    "server:dev": "NODE_ENV=development node server/start-server",
+    "server:prod": "NODE_ENV=production node server/start-server",
+    "webpack:dev": "NODE_ENV=development webpack-dev-server --config webpack.config.dev.js",
+    "webpack:prod": "NODE_ENV=production webpack --config webpack.config.prod.js",
+    "build": "rimraf server/static/js server/static/css/ai dist && npm run webpack:prod && npm run copy-to-server",
+    "copy-to-server": "mkdir server/static/js server/static/css/ai && cp dist/main.js server/static/js/ && cp dist/main.css server/static/css/ai/"
   },
   "author": "Ahmed Abbas",
   "license": "ISC",
@@ -19,9 +30,12 @@
     "css-loader": "^2.1.1",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
+    "mini-css-extract-plugin": "^0.6.0",
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.6.0",
+    "rimraf": "^2.6.3",
     "style-loader": "^0.23.1",
+    "typescript": "^3.4.4",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.2.1"

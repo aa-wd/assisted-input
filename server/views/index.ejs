@@ -5,16 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assisted Input</title>
     <link rel="stylesheet" href="/static/css/fonts.css" />
-    <!--<link rel="stylesheet" href="/static/css/main.css">-->
+    <% if (!isDev) { %>
+    <link rel="stylesheet" href="/static/css/ai/main.css">
+    <% } %>
     <link rel="stylesheet" href="/static/css/normalize.css" />
   </head>
   <body>
-    <div>
-      <input />
+
+    <h1>Assisted input demo.</h1>
+    <div class="container">
+      <div class="instruction__inputs">
+        <div class="inputs__wrapper">
+          <input placeholder="regular input field" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+        </div>
+        <div class="inputs__wrapper">
+          <input placeholder="input field with assistance" data-assisted autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+        </div>
+        <div class="inputs__wrapper">
+          <input placeholder="input field with assistance" data-assisted autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+        </div>
+      </div>
+      <div class="instruction__texts">
+        <h2>How it works</h2>
+        <p>
+          The second and third input assist with diacritic marks for the
+          characters
+          <kbd>a</kbd>, <kbd>e</kbd>, <kbd>i</kbd>, <kbd>o</kbd>,
+          <kbd>u</kbd> and <kbd>c</kbd>. Press and hold one of those characters
+          for a short while (200ms) and a support bar will appear.
+        </p>
+        <p>
+          Once the diacritic selector bar appears,
+          <b>press the same key again</b> to select to select the next
+          diacritic. You can also use the <kbd>→</kbd> to go forwards, or the
+          <kbd>←</kbd> to go backwards. As you move forwards or backwards, the
+          input field will show you the updated text.
+        </p>
+        <p>
+          To select the diacritic, either press <kbd>⏎ Enter</kbd>, or - if you
+          want to be quicker - just type another character. To revert to the
+          original character without diacritic, press <kbd>Esc</kbd>.
+        </p>
+      </div>
     </div>
     <div>
-      <input />
+      <p class="copyright">© 2019 Ahmed Abbas</p>
     </div>
+
     <script src="<%= currentPath %>/main.js"></script>
+    <script>
+      AssistedInputFields.createAssistedInputs({
+        'a': ['a', 'à', 'â', 'æ'],
+        'c': ['c', 'ç'],
+        'e': ['e', 'é', 'è', 'ê', 'ë'],
+        'i': ['i', 'î', 'ï'],
+        'o': ['o', 'ô', 'œ'],
+        'u': ['u', 'û', 'ü', 'ù'],
+      });
+    </script>
   </body>
 </html>

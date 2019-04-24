@@ -18,8 +18,9 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-
-// app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, './views/index.html')));
-app.get('*', (req, res) => res.render('index', { currentPath: getWebpackPath() }));
+app.get('*', (req, res) => res.render('index', {
+  currentPath: isDev ? getWebpackPath() : `${getExpressPath()}/static/js`,
+  isDev
+}));
 
 app.listen(expressPort, '0.0.0.0', () => console.log(`Server started on ${expressPort}!`));

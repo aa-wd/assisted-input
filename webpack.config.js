@@ -1,33 +1,27 @@
 const path = require('path');
-const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const { getWebpackPath, getExpressPath } = require('./get-dev-path');
-const { webpackPort } = require('./settings.json');
+const { getWebpackPath } = require('./get-dev-path');
 
 const isDev = process.env.NODE_ENV === 'development';
 const publicPath = `${getWebpackPath()}/`;
-
 
 module.exports = {
   entry: {
     'main': './src/index.ts',
   },
   output: {
-    publicPath,
-  },
-  devServer: {
-    host: '0.0.0.0',
-    port: webpackPort,
-    hot: true,
-    headers: {
-      'Access-Control-Allow-Origin': '*'
-    },
+    publicPath: isDev ? publicPath : '/',
+    path: path.resolve(__dirname, './dist'),
+    library: 'assistedInput',
+    libraryExport: 'default',
+    libraryTarget: 'umd',
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
+
   ],
   resolve: {
-    extensions: ['.js', '.ts',]
+    extensions: ['.js', '.ts',],
   },
   module: {
     rules: [
@@ -40,7 +34,13 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader'],
+        use: [
+          isDev ?
+            'style-loader':
+            MiniCssExtractPlugin.loader,
+          'css-loader',
+          'postcss-loader'
+        ],
         include: [
           path.resolve(__dirname, './src')
         ],

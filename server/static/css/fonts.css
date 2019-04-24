@@ -9,3 +9,9 @@
     font-weight: bold;
     src: url("/static/fonts/Rubik-Bold.ttf") format("truetype");
 }
+
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-weight: bold;
+  src: url("/static/fonts/IBMPlexSans-Bold.ttf") format("truetype");
+}
