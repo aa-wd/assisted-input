@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/static/css/ai/main.css">
     <% } %>
     <link rel="stylesheet" href="/static/css/normalize.css" />
+    <link rel="stylesheet" href="/static/css/demo.css" />
   </head>
   <body>
 
@@ -16,13 +17,13 @@
     <div class="container">
       <div class="instruction__inputs">
         <div class="inputs__wrapper">
-          <input placeholder="regular input field" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+          <input placeholder="regular input field" autocomplete="off" autocapitalize="off" spellcheck="false" />
         </div>
         <div class="inputs__wrapper">
-          <input placeholder="input field with assistance" data-assisted autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+          <input placeholder="input field with assistance" data-assisted autocomplete="off" autocapitalize="off" spellcheck="false" />
         </div>
         <div class="inputs__wrapper">
-          <input placeholder="input field with assistance" data-assisted autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+          <input placeholder="input field with assistance" data-assisted autocomplete="off" autocapitalize="off" spellcheck="false" />
         </div>
       </div>
       <div class="instruction__texts">
@@ -49,7 +50,11 @@
       </div>
     </div>
     <div>
-      <p class="copyright">© 2019 Ahmed Abbas</p>
+      <p class="copyright">© 2019 Ahmed Abbas
+        <a href="https://github.com/aa-wd/assisted-input">
+          <img class="github" src="/static/images/github.svg" />
+        </a>
+      </p>
     </div>
 
     <script src="<%= currentPath %>/main.js"></script>
